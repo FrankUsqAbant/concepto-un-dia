@@ -297,10 +297,10 @@ void main(){
   vec3 col=mix(C1,C2,smoothstep(0.,.52,t)); col=mix(col,C3,smoothstep(.52,1.,t));
   /* sol: halo, rayos y disco */
   vec2 sp=vec2(SUN.x*asp,SUN.y); vec2 ds=p-sp; float d=length(ds);
-  float glow=exp(-d*3.6)*.42+exp(-d*11.)*.5;
-  float ray=pow(ns(vec2(atan(ds.y,ds.x)*6.+1.7,T*.05)),3.)*exp(-d*2.4)*.55;
+  float glow=exp(-d*6.)*.30+exp(-d*18.)*.42;
+  float ray=pow(ns(vec2(atan(ds.y,ds.x)*6.+1.7,T*.05)),3.)*exp(-d*3.2)*.40;
   col+=SC*(glow+ray)*(1.-NI*.55);
-  col=mix(col,mix(vec3(1.),SC,.25),smoothstep(.052,.040,d)*(1.-NI*.2));
+  col=mix(col,mix(vec3(1.),SC,.25),smoothstep(.040,.030,d)*(1.-NI*.2));
   /* luna */
   vec2 mp=vec2(.865*asp,.84); float dm=length(p-mp);
   col+=vec3(.9,.88,1.)*exp(-dm*9.)*.22*LU;
@@ -317,14 +317,14 @@ void main(){
   float q1=fb(bs+vec2(0.,T*.008));
   vec2 b2=bs*1.15+q1*1.2+vec2(T*.018,0.);
   float den=fb(b2);
-  float lo=.60-CL*.20;
-  float cov=smoothstep(lo,lo+.22,den)*mix(.45,1.,smoothstep(0.,.55,uv.y));
+  float lo=.66-CL*.16;
+  float cov=smoothstep(lo,lo+.30,den)*mix(.45,1.,smoothstep(0.,.55,uv.y));
   vec2 sd=normalize(sp-p+.0001);
-  float l=clamp(.5+(den-fb(b2+sd*.09))*5.,0.,1.);
-  vec3 lit=mix(vec3(1.),SC,.3), sh=mix(C2,vec3(.36,.36,.5),.5);
+  float l=clamp(.5+(den-fb(b2+sd*.09))*3.4,0.,1.);
+  vec3 lit=mix(vec3(1.),SC,.22), sh=mix(C2,C1,.5)*.80+vec3(.04,.03,.07);
   vec3 cc=mix(sh,lit,l); cc=mix(cc,vec3(.16,.18,.34),NI*.82);
   cc+=SC*smoothstep(0.,.5,cov)*(1.-smoothstep(.5,1.,cov))*exp(-d*2.2)*.35*(1.-NI);
-  col=mix(col,cc,cov*.92);
+  col=mix(col,cc,cov*.85);
   /* onda de luz al pulsar */
   float rr=(length(p-vec2(B.x*asp,B.y))-B.z*.55)*16.;
   col+=SC*exp(-rr*rr)*max(0.,1.-B.z/1.5)*.5*step(B.z,1.5);
@@ -339,28 +339,28 @@ void main(){
   const U = {}; ['R', 'T', 'C1', 'C2', 'C3', 'SC', 'ST', 'LU', 'NI', 'CL', 'SUN', 'M', 'W', 'B'].forEach(n => U[n] = gl.getUniformLocation(pr, n));
   const u = {c1: [.8, .85, .95], c2: [.9, .84, .9], c3: [.97, .86, .8], sc: [1, .95, .84], st: 0, lu: 0, ni: 0, cl: .5, sun: [.1, .45]};
   const v = {x: .5, y: .5, s: 0, vx: 0, vy: 0, ult: 0}, ola = {x: .5, y: .5, t: -9};
-  let esc = innerWidth < 700 ? .5 : .62, raf = 0, parada = false, calor = 0, acum = 0, nCu = 0, ultDib = 0, actividad = 0;
+  let esc = innerWidth < 700 ? .5 : .62, raf = 0, parada = false, pendiente = false, calor = 0, acum = 0, nCu = 0, ultDib = 0, actividad = 0;
   function talla(){
     const d = Math.min(devicePixelRatio || 1, 1.5); let W = Math.max(2, Math.round(innerWidth * d * esc)), H = Math.max(2, Math.round(innerHeight * d * esc));
     if (W > 1100) { H = Math.round(H * 1100 / W); W = 1100; } cv.width = W; cv.height = H; gl.viewport(0, 0, W, H);
   }
   function cuadro(ahora){
-    raf = 0; if (parada || document.hidden) return;
+    raf = 0; if (document.hidden || (parada && !pendiente)) return; pendiente = false;
     const t = ahora / 1000, edad = t - ola.t, movio = ahora - v.ult < 160;
     v.s += ((movio ? 1 : 0) - v.s) * (movio ? .18 : .05); v.vx *= .9; v.vy *= .9;
     const ocupado = v.s > .02 || edad < 1.5 || ahora < actividad;
     if (!ocupado && ahora - ultDib < 33) { raf = requestAnimationFrame(cuadro); return; }        // en calma, ~30 cuadros/s bastan
     if (calor < 8) calor++; else { const dt = ahora - ultDib; if (dt < 2000) { acum += dt; nCu++; } }
     ultDib = ahora;
-    if (nCu >= 30 || (nCu >= 4 && acum > 1400)) { const m = acum / nCu; acum = nCu = 0; if (m > (ocupado ? 45 : 70)) { if (esc > .34) { esc *= .78; talla(); } else { parada = true; cv.dataset.estado = 'quieto'; } } }
+    if (!parada && (nCu >= 30 || (nCu >= 4 && acum > 1400))) { const m = acum / nCu; acum = nCu = 0; if (m > (ocupado ? 45 : 70)) { if (esc > .34) { esc *= .78; talla(); } else { parada = true; cv.dataset.estado = 'quieto'; } } }
     gl.uniform2f(U.R, cv.width, cv.height); gl.uniform1f(U.T, quieto ? 40 : t);
     gl.uniform3fv(U.C1, u.c1); gl.uniform3fv(U.C2, u.c2); gl.uniform3fv(U.C3, u.c3); gl.uniform3fv(U.SC, u.sc);
     gl.uniform1f(U.ST, u.st); gl.uniform1f(U.LU, u.lu); gl.uniform1f(U.NI, u.ni); gl.uniform1f(U.CL, u.cl); gl.uniform2fv(U.SUN, u.sun);
     gl.uniform3f(U.M, v.x, v.y, v.s); gl.uniform2f(U.W, v.vx, v.vy); gl.uniform3f(U.B, ola.x, ola.y, edad < 1.5 ? edad : 9);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
-    raf = requestAnimationFrame(cuadro);
+    raf = parada ? 0 : requestAnimationFrame(cuadro);
   }
-  const pedir = () => { actividad = performance.now() + 250; if (!raf && !parada) raf = requestAnimationFrame(cuadro); };
+  const pedir = () => { actividad = performance.now() + 250; if (!raf) { if (parada) pendiente = true; raf = requestAnimationFrame(cuadro); } };
   if (!quieto) {
     addEventListener('pointermove', e => {
       if (e.pointerType === 'touch') return;

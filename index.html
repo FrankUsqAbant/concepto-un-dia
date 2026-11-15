@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Frank Abanto — Estilo 3 · Un día</title>
+<link rel="icon" href="data:,">
+<meta name="description" content="Frank Abanto: software e IA hechos a la medida de tu negocio. Un día entero trabajando por ti.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=La+Belle+Aurore&text=Frank%20Abanto&display=swap" rel="stylesheet">
+<style>
+/* El cielo cambia con el scroll: amanecer → mediodía → atardecer → noche. Estos valores los mueve el script. */
+:root{
+  --c1:#cdd9f2; --c2:#e8d5e6; --c3:#f8dccb; --tx:#1d1a2b; --inv:#ffffff; --ac:#c8553a; --sol:#fff3dc;
+  --gla:.5; --glb:.75; --st:0; --lu:0; --sx:8vw; --sy:60vh;
+  --serif:"Instrument Serif",Georgia,serif; --sans:Inter,system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+  --lado:clamp(18px,5vw,72px); --suave:cubic-bezier(.22,.7,.2,1);
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{color:var(--tx);font-family:var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;background:var(--c2)}
+a{color:inherit}
+img{display:block;max-width:100%}
+:focus-visible{outline:2px solid var(--tx);outline-offset:4px;border-radius:10px}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.tenue{color:color-mix(in srgb,var(--tx) 68%,transparent)}
+
+/* ---------- cielo fijo ---------- */
+.cielo{position:fixed;inset:0;z-index:-2;background:linear-gradient(180deg,var(--c1) 0%,var(--c2) 52%,var(--c3) 100%)}
+.cielo::before{content:"";position:absolute;inset:0;opacity:var(--st);
+  background-image:radial-gradient(1.2px 1.2px at 12% 18%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 28% 42%,#fff 50%,transparent 51%),
+    radial-gradient(1.4px 1.4px at 46% 12%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 63% 30%,#fff 50%,transparent 51%),
+    radial-gradient(1.3px 1.3px at 78% 16%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 88% 44%,#fff 50%,transparent 51%),
+    radial-gradient(1px 1px at 6% 58%,#fff 50%,transparent 51%),radial-gradient(1.2px 1.2px at 37% 66%,#fff 50%,transparent 51%),
+    radial-gradient(1px 1px at 55% 54%,#fff 50%,transparent 51%),radial-gradient(1.3px 1.3px at 71% 70%,#fff 50%,transparent 51%),
+    radial-gradient(1px 1px at 93% 76%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 20% 84%,#fff 50%,transparent 51%)}
+.cielo::after{content:"";position:absolute;inset:0;opacity:.07;mix-blend-mode:soft-light;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.sol,.luna{position:fixed;left:0;top:0;z-index:-1;border-radius:50%;pointer-events:none;will-change:transform}
+.sol{width:clamp(110px,13vw,190px);aspect-ratio:1;transform:translate3d(calc(var(--sx) - 50% + var(--mx,0) * 20px),calc(var(--sy) - 50% + var(--my,0) * 12px),0);
+  background:radial-gradient(circle,var(--sol) 0 46%,color-mix(in srgb,var(--sol) 55%,transparent) 62%,transparent 72%);
+  box-shadow:0 0 120px 60px color-mix(in srgb,var(--sol) 45%,transparent)}
+.luna{width:74px;aspect-ratio:1;right:11vw;left:auto;top:13vh;opacity:var(--lu);background:radial-gradient(circle at 36% 36%,#fffdf6 0 55%,#e9e2f5 100%);
+  box-shadow:0 0 70px 18px rgba(233,226,255,.28)}
+
+/* ---------- piezas comunes ---------- */
+.vidrio{background:rgba(255,255,255,var(--gla));border:1px solid rgba(255,255,255,var(--glb));border-radius:26px;
+  -webkit-backdrop-filter:blur(18px) saturate(1.2);backdrop-filter:blur(18px) saturate(1.2);box-shadow:0 30px 60px -34px rgba(40,30,70,.35)}
+.btn{display:inline-flex;align-items:center;gap:10px;background:var(--tx);color:var(--inv);border-radius:999px;padding:15px 26px;
+  font-weight:600;font-size:15px;text-decoration:none;white-space:nowrap;transition:transform .5s var(--suave),box-shadow .5s var(--suave)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 16px 30px -14px color-mix(in srgb,var(--tx) 60%,transparent)}
+.enlace{font-weight:500;font-size:15px;text-underline-offset:6px;text-decoration-thickness:1px}
+h1,h2,h3{font-family:var(--serif);font-weight:400;letter-spacing:-.015em}
+em{color:var(--ac)}
+.r{opacity:0;transform:translateY(18px);transition:opacity 1.2s var(--suave),transform 1.2s var(--suave);transition-delay:var(--d,0s)}
+.r.in{opacity:1;transform:none}
+section{padding:clamp(80px,13vh,150px) var(--lado)}
+.dentro{max-width:1160px;margin:0 auto}
+.cab{text-align:center;max-width:640px;margin:0 auto clamp(40px,7vh,72px)}
+.cab .mono{display:block;margin-bottom:18px}
+.cab h2{font-size:clamp(36px,4.8vw,64px);line-height:1.05}
+.cab p{margin-top:16px;font-size:17px;line-height:1.6}
+
+/* ---------- navegación ---------- */
+.nav{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:50;display:flex;align-items:center;gap:30px;
+  padding:8px 8px 8px 24px;border-radius:999px;width:max-content;max-width:calc(100vw - 24px)}
+.firma{font-family:"La Belle Aurore",cursive;font-size:23px;text-decoration:none}
+.nav nav{display:flex;gap:24px;font-size:14px}
+.nav nav a{text-decoration:none;opacity:.75;transition:opacity .4s}
+.nav nav a:hover{opacity:1}
+.nav .btn{padding:10px 18px;font-size:13px}
+
+/* ---------- 1 · amanecer: el cielo de verdad (WebGL) ---------- */
+.cielo-gl{position:fixed;inset:0;width:100%;height:100%;z-index:-2;display:block}
+.gl .cielo{visibility:hidden}
+.gl .luna{display:none}
+/* el sol: anillo que late hasta que lo agarras */
+.gl .sol{width:68px;background:none;box-shadow:none;border:1.5px solid color-mix(in srgb,var(--tx) 50%,transparent);animation:latido 2.6s ease-out infinite;transition:opacity .7s}
+.gl.usado .sol{opacity:0;animation:none}
+@keyframes latido{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--tx) 38%,transparent)}100%{box-shadow:0 0 0 30px transparent}}
+.hero{position:relative;min-height:100svh;padding:0;display:flex;align-items:center;touch-action:pan-y}
+.hero-t{position:relative;z-index:3;width:min(780px,100%);margin:0 var(--lado) 0 auto;padding:clamp(100px,14vh,140px) 0 clamp(70px,10vh,110px)}
+.hero-t>.mono{display:inline-flex;align-items:center;gap:10px}
+.hero-t>.mono::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ac)}
+.hero h1{font-size:clamp(46px,6.6vw,108px);line-height:.98;margin:16px 0 0}
+.hero h1 em{position:relative;display:inline-block}
+.hero h1 em::after{content:"";position:absolute;left:0;right:0;bottom:-.1em;height:.16em;background:var(--ac);opacity:.7;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='8' viewBox='0 0 40 8'%3E%3Cpath d='M0 4 Q10 0 20 4 T40 4' fill='none' stroke='%23000' stroke-width='2.2'/%3E%3C/svg%3E") repeat-x 0 50%/40px 100%;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='8' viewBox='0 0 40 8'%3E%3Cpath d='M0 4 Q10 0 20 4 T40 4' fill='none' stroke='%23000' stroke-width='2.2'/%3E%3C/svg%3E") repeat-x 0 50%/40px 100%;
+  clip-path:inset(0 100% 0 0);transition:clip-path 1.3s var(--suave) 1s}
+.hero h1.in em::after{clip-path:inset(0 0 0 0)}
+.hero .sub{max-width:46ch;margin:22px 0 0;font-size:clamp(16px,1.3vw,18px);line-height:1.65}
+.hero .acc{display:flex;align-items:center;gap:26px;flex-wrap:wrap;margin-top:28px}
+.hero .btn{will-change:transform}
+.agarra{position:absolute;z-index:3;left:var(--lado);bottom:clamp(22px,4vh,40px);display:flex;align-items:center;gap:10px;transition:opacity .8s}
+.agarra span{font-size:15px;letter-spacing:0}
+.gl.usado .agarra{opacity:0;pointer-events:none}
+.sr{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;padding:0}
+
+/* ---------- 2 · mediodía: servicios ---------- */
+.bento{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px}
+.caja{padding:28px 28px 26px;display:flex;flex-direction:column;min-height:230px;transition:transform .7s var(--suave),box-shadow .7s var(--suave)}
+.caja:hover{transform:translateY(-5px);box-shadow:0 40px 70px -36px rgba(40,30,70,.45)}
+.caja.pulso{animation:pulso 2.6s var(--suave)}
+@keyframes pulso{0%,100%{box-shadow:0 30px 60px -34px rgba(40,30,70,.35)}25%,60%{box-shadow:0 0 0 3px var(--ac),0 40px 70px -30px color-mix(in srgb,var(--ac) 55%,transparent)}}
+.caja:nth-child(1),.caja:nth-child(2){grid-column:span 3;min-height:270px}
+.caja:nth-child(n+3){grid-column:span 2}
+.caja .mono{opacity:.6}
+.caja h3{font-size:clamp(28px,2.9vw,40px);line-height:1.05;margin-top:auto;padding-top:34px}
+.caja p{margin-top:10px;font-size:15px;line-height:1.55}
+.caja .ej{margin-top:14px;font-size:13.5px;display:flex;gap:8px;align-items:baseline}
+.caja .ej::before{content:"";flex:none;width:14px;border-top:1px solid var(--ac);transform:translateY(-4px)}
+.nota{text-align:center;margin-top:36px;font-size:15px}
+
+/* ---------- 3 · atardecer: proyectos ---------- */
+.obras{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:18px}
+.obra{display:block;text-decoration:none;padding:12px 12px 20px;transition:transform .7s var(--suave)}
+.obra:hover{transform:translateY(-5px)}
+.obra:first-child{grid-row:span 2;display:flex;flex-direction:column}
+.obra .im{border-radius:18px;overflow:hidden;aspect-ratio:16/10;background:rgba(0,0,0,.08)}
+.obra:first-child .im{flex:1;aspect-ratio:auto;min-height:300px}
+.obra img{width:100%;height:100%;object-fit:cover;object-position:top;transition:transform 1.6s var(--suave)}
+.obra:hover img{transform:scale(1.035)}
+.obra .tx{padding:16px 12px 0;display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+.obra h3{font-size:clamp(24px,2.4vw,34px);line-height:1.1}
+.obra p{font-size:14px;line-height:1.5;margin-top:4px}
+.obra .ir{font-size:13px;white-space:nowrap;opacity:.7}
+
+/* ---------- ocaso ---------- */
+.ocaso{height:62vh;display:grid;place-items:center;text-align:center;padding-block:0}
+.ocaso p{font-family:var(--serif);font-size:clamp(26px,3.4vw,46px);line-height:1.15;max-width:18ch}
+
+/* ---------- 4 · noche: cierre ---------- */
+.cierre{text-align:center;padding-bottom:clamp(60px,9vh,100px)}
+.arco{width:min(210px,52vw);aspect-ratio:210/290;margin:0 auto 34px;border-radius:999px 999px 22px 22px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.25);box-shadow:0 30px 70px -30px rgba(0,0,0,.6)}
+.arco img{width:100%;height:100%;object-fit:cover;object-position:50% 4%}
+.cierre h2{font-size:clamp(46px,7vw,100px);line-height:1}
+.cierre p{max-width:40ch;margin:20px auto 30px;font-size:17px;line-height:1.6}
+footer{padding:26px var(--lado) 34px;display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;font-size:13px}
+footer nav{display:flex;gap:20px}
+
+/* ---------- móvil ---------- */
+@media (max-width:860px){
+  .nav{gap:14px;padding-left:18px}.nav nav{display:none}
+  .hero h1{font-size:clamp(42px,13vw,66px)}
+  .hero .acc .btn{flex:1 1 100%;justify-content:center}
+  .hero{align-items:flex-end}
+  .hero-t{padding-top:112px;margin:0 var(--lado)}
+  .bento{grid-template-columns:1fr}
+  .caja,.caja:nth-child(n){grid-column:auto;min-height:0}
+  .caja h3{padding-top:22px}
+  .obras{grid-template-columns:1fr}
+  .obra:first-child .im{min-height:0;aspect-ratio:16/10;flex:none}
+  .ocaso{height:46vh}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .r,.dia li{opacity:1;transform:none;transition:none}
+  .dia li path{stroke-dashoffset:0;transition:none}
+  .gl .sol{animation:none}
+  .hero h1 em::after{clip-path:none;transition:none}
+  *{transition-duration:.01s!important}
+}
+</style>
+</head>
+<body>
+<div class="cielo" aria-hidden="true"></div>
+<canvas id="cieloGL" class="cielo-gl" aria-hidden="true"></canvas>
+<div class="sol" aria-hidden="true"></div>
+<div class="luna" aria-hidden="true"></div>
+
+<header class="nav vidrio">
+  <a class="firma" href="#inicio">Frank Abanto</a>
+  <nav aria-label="Principal"><a href="#servicios">Servicios</a><a href="#proyectos">Proyectos</a></nav>
+  <a class="btn" href="#hablemos">Agendar llamada</a>
+</header>
+
+<main>
+<!-- 1 · AMANECER -->
+<section class="hero" id="inicio">
+  <div class="hero-t">
+    <span class="mono tenue r">Amanecer · empieza el día de tu negocio</span>
+    <h1 class="r" style="--d:.1s">Software e IA hechos <em>a tu medida.</em></h1>
+    <p class="sub tenue r" style="--d:.2s">Conecto tus herramientas, automatizo tus procesos y pongo la inteligencia artificial a trabajar para ti. Tú te enfocas en crecer.</p>
+    <div class="acc r" style="--d:.3s">
+      <a class="btn" href="#hablemos">Hablemos de tu negocio <span aria-hidden="true">→</span></a>
+      <a class="enlace" href="#servicios">Explorar soluciones</a>
+    </div>
+  </div>
+  <p class="agarra mono tenue" id="agarra" aria-hidden="true"><span>☼</span> Arrastra el sol y cambia el momento del día</p>
+  <label class="sr">Momento del día<input id="faseRango" class="sr" type="range" min="0" max="300" value="0"></label>
+</section>
+
+<!-- 2 · MEDIODÍA -->
+<section id="servicios"><div class="dentro">
+  <div class="cab r">
+    <span class="mono tenue">Mediodía · lo que trabaja por ti</span>
+    <h2>Lo que puedo construir <em>para ti.</em></h2>
+    <p class="tenue">Para vender más, responder mejor y dejar de hacer a mano lo que puede hacerse solo.</p>
+  </div>
+  <div class="bento">
+    <article class="caja vidrio r"><span class="mono">01</span><h3>Páginas web</h3><p class="tenue">Que te encuentren en Google y te escriban, sin depender solo de las redes sociales.</p><span class="ej">Web con catálogo y pedidos por WhatsApp</span></article>
+    <article class="caja vidrio r" style="--d:.1s"><span class="mono">02</span><h3>Agentes y chatbots de IA</h3><p class="tenue">Un asistente que responde y hace tareas por ti, con la información real de tu negocio.</p><span class="ej">Chatbot que responde en WhatsApp 24/7</span></article>
+    <article class="caja vidrio r"><span class="mono">03</span><h3>Automatización</h3><p class="tenue">Deja de copiar y pegar datos entre hojas, correos y sistemas.</p><span class="ej">Reporte de ventas cada lunes</span></article>
+    <article class="caja vidrio r" style="--d:.1s"><span class="mono">04</span><h3>Integraciones</h3><p class="tenue">Tus herramientas hablándose entre sí, la información en un solo lugar.</p><span class="ej">Formulario web conectado a tu CRM</span></article>
+    <article class="caja vidrio r" style="--d:.2s"><span class="mono">05</span><h3>Dashboards</h3><p class="tenue">Decide con números claros en una pantalla, no con hojas sueltas.</p><span class="ej">Ventas, gastos y stock al día</span></article>
+    <article class="caja vidrio r" style="grid-column:1/-1;min-height:0"><span class="mono">06</span><h3 style="padding-top:18px">Atención al cliente con IA</h3><p class="tenue">Responde rápido a cada cliente, también fuera de horario, sin sumar más personal.</p></article>
+  </div>
+  <p class="nota tenue r">Sin precios fijos: te envío una cotización según lo que necesitas. <a class="enlace" href="#hablemos" style="color:var(--tx)">Cotización sin compromiso</a></p>
+</div></section>
+
+<!-- 3 · ATARDECER -->
+<section id="proyectos"><div class="dentro">
+  <div class="cab r">
+    <span class="mono tenue">Atardecer · ya probado</span>
+    <h2>Cada sistema lo probé <em>en lo mío.</em></h2>
+  </div>
+  <div class="obras">
+    <a class="obra vidrio r" href="https://jireh-pasteleria.pages.dev" target="_blank" rel="noopener">
+      <div class="im"><img loading="lazy" src="https://abanto.pages.dev/images/projects/jireh-pasteleria.webp" alt="Captura de JIRÉH Pastelería"></div>
+      <div class="tx"><div><h3>JIRÉH Pastelería</h3><p class="tenue">Catálogo con «Arma tu torta» en vivo y pedidos por WhatsApp.</p></div><span class="ir">Ver demo →</span></div>
+    </a>
+    <a class="obra vidrio r" style="--d:.1s" href="https://hostal-aguilar.pages.dev" target="_blank" rel="noopener">
+      <div class="im"><img loading="lazy" src="https://abanto.pages.dev/images/projects/hostal-aguilar.webp" alt="Captura de Hostal Aguilar"></div>
+      <div class="tx"><div><h3>Hostal Aguilar</h3><p class="tenue">Reservas por WhatsApp y panel de administración.</p></div><span class="ir">Ver demo →</span></div>
+    </a>
+    <a class="obra vidrio r" style="--d:.2s" href="https://chavez-originals.pages.dev" target="_blank" rel="noopener">
+      <div class="im"><img loading="lazy" src="https://abanto.pages.dev/images/projects/chavez-originals.webp" alt="Captura de Chavez Originals"></div>
+      <div class="tx"><div><h3>Chavez Originals</h3><p class="tenue">Vitrina interactiva y catálogo administrable.</p></div><span class="ir">Ver demo →</span></div>
+    </a>
+  </div>
+  <p class="nota r"><a class="enlace" href="https://github.com/FrankUsqAbant" target="_blank" rel="noopener">Ver todos en GitHub</a></p>
+</div></section>
+
+<!-- OCASO -->
+<section class="ocaso" id="ocaso"><p class="r">Y cuando tú cierras, <em>sigue atendiendo.</em></p></section>
+
+<!-- 4 · NOCHE -->
+<section class="cierre" id="hablemos">
+  <div class="arco r"><img src="https://abanto.pages.dev/images/frank-hero.webp" alt="Frank Abanto"></div>
+  <span class="mono tenue r">Siguiente paso</span>
+  <h2 class="r" style="--d:.1s;margin-top:16px">Hablemos <em>30 minutos.</em></h2>
+  <p class="tenue r" style="--d:.2s">Me cuentas cómo trabajas hoy y vemos juntos qué se puede hacer solo. Sin compromiso.</p>
+  <a class="btn r" style="--d:.3s" href="#">Agendar llamada <span aria-hidden="true">→</span></a>
+</section>
+</main>
+
+<footer class="tenue">
+  <a class="firma" href="#inicio" style="color:var(--tx)">Frank Abanto</a>
+  <nav aria-label="Pie"><a href="https://github.com/FrankUsqAbant" target="_blank" rel="noopener">GitHub</a><a href="index.html">Estilo 1</a></nav>
+  <span>© 2026</span>
+</footer>
+
+<script>
+if (location.search.includes('reloj')) window.requestAnimationFrame = cb => setTimeout(() => cb(performance.now()), 16);   // solo para pruebas
+const raiz = document.documentElement, quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ============ el cielo: cuatro momentos del día, mezclados de forma continua según el scroll ============ */
+const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const MOMENTOS = [
+  //            cielo alto  medio      bajo       texto      invertido  acento     sol       vidrio borde estrellas luna  sol(q)
+  {c1:'#cdd9f2',c2:'#e8d5e6',c3:'#f8dccb',tx:'#1d1a2b',inv:'#ffffff',ac:'#c8553a',sol:'#fff1d6',gla:.5, glb:.75,st:0,lu:0,q:.1,cl:.5},   // amanecer
+  {c1:'#bcd6f4',c2:'#dbe9f6',c3:'#f6f2e8',tx:'#1b1d2a',inv:'#ffffff',ac:'#b4552c',sol:'#ffffff',gla:.55,glb:.8, st:0,lu:0,q:.5,cl:.4},   // mediodía
+  {c1:'#e9b98f',c2:'#f1cdb4',c3:'#f5e2d0',tx:'#2a1b15',inv:'#fff7ef',ac:'#a8431c',sol:'#ffd9a0',gla:.42,glb:.6, st:0,lu:0,q:.86,cl:.75},  // atardecer
+  {c1:'#0d0e2b',c2:'#1b1a42',c3:'#3a2a55',tx:'#f1ecf7',inv:'#14132e',ac:'#f5b98a',sol:'#ff9d6b',gla:.07,glb:.16,st:.9,lu:1,q:1.12,cl:.7} // noche
+].map(m => ({...m, c1: hex(m.c1), c2: hex(m.c2), c3: hex(m.c3), tx: hex(m.tx), inv: hex(m.inv), ac: hex(m.ac), sol: hex(m.sol)}));
+let paradas = [];
+function medir(){
+  const top = id => document.getElementById(id).getBoundingClientRect().top + scrollY, vh = innerHeight;
+  // [posición de scroll, momento]: el atardecer se mantiene durante proyectos y anochece en el ocaso
+  paradas = [[0, 0], [top('servicios') - vh * .2, 1], [top('proyectos') - vh * .3, 2], [top('ocaso') - vh * .75, 2], [top('ocaso') + vh * .05, 3]];
+}
+
+/* ============ el cielo en WebGL: nubes con luz, sol con halo y rayos, estrellas, viento del cursor ============ */
+const cieloGL = (function(){
+  const cv = document.getElementById('cieloGL');
+  if (!cv || location.search.includes('nogl')) return null;
+  const gl = cv.getContext('webgl', {antialias: false, alpha: false, powerPreference: 'high-performance'}); if (!gl) return null;
+  const FRAG = `
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+uniform vec2 R; uniform float T; uniform vec3 C1; uniform vec3 C2; uniform vec3 C3; uniform vec3 SC;
+uniform float ST; uniform float LU; uniform float NI; uniform float CL; uniform vec2 SUN; uniform vec3 M; uniform vec2 W; uniform vec3 B;
+float h1(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+float ns(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
+  return mix(mix(h1(i),h1(i+vec2(1.,0.)),f.x),mix(h1(i+vec2(0.,1.)),h1(i+vec2(1.,1.)),f.x),f.y);}
+float fb(vec2 p){float a=.5,s=0.;for(int i=0;i<5;i++){s+=a*ns(p);p=p*2.03+vec2(17.,9.);a*=.5;}return s;}
+void main(){
+  vec2 uv=gl_FragCoord.xy/R; float asp=R.x/R.y; vec2 p=vec2(uv.x*asp,uv.y);
+  float t=1.-uv.y;
+  vec3 col=mix(C1,C2,smoothstep(0.,.52,t)); col=mix(col,C3,smoothstep(.52,1.,t));
+  /* sol: halo, rayos y disco */
+  vec2 sp=vec2(SUN.x*asp,SUN.y); vec2 ds=p-sp; float d=length(ds);
+  float glow=exp(-d*3.6)*.42+exp(-d*11.)*.5;
+  float ray=pow(ns(vec2(atan(ds.y,ds.x)*6.+1.7,T*.05)),3.)*exp(-d*2.4)*.55;
+  col+=SC*(glow+ray)*(1.-NI*.55);
+  col=mix(col,mix(vec3(1.),SC,.25),smoothstep(.052,.040,d)*(1.-NI*.2));
+  /* luna */
+  vec2 mp=vec2(.865*asp,.84); float dm=length(p-mp);
+  col+=vec3(.9,.88,1.)*exp(-dm*9.)*.22*LU;
+  col=mix(col,vec3(1.,.99,.94)*(.9+.1*ns(p*40.)),smoothstep(.046,.040,dm)*LU);
+  /* estrellas */
+  vec2 sg=p*52.; vec2 ce=floor(sg); vec2 f=fract(sg)-.5; float hv=h1(ce);
+  vec2 jt=vec2(h1(ce+7.3),h1(ce+13.1))-.5;
+  float star=step(.985,hv)*smoothstep(.2,.0,length(f-jt*.6))*(.55+.45*sin(T*(1.2+hv*3.)+hv*60.));
+  col+=vec3(1.,.97,.9)*star*ST*smoothstep(.15,.6,uv.y);
+  /* nubes: el cursor las abre y las arrastra */
+  vec2 pm=vec2(M.x*asp,M.y); vec2 dd=p-pm; float gm=exp(-dot(dd,dd)*16.);
+  vec2 cp=p+dd/(length(dd)+.001)*gm*.14*M.z+W*gm*1.1;
+  vec2 bs=cp*vec2(1.4,1.9)+vec2(T*.010,0.);
+  float q1=fb(bs+vec2(0.,T*.008));
+  vec2 b2=bs*1.15+q1*1.2+vec2(T*.018,0.);
+  float den=fb(b2);
+  float lo=.60-CL*.20;
+  float cov=smoothstep(lo,lo+.22,den)*mix(.45,1.,smoothstep(0.,.55,uv.y));
+  vec2 sd=normalize(sp-p+.0001);
+  float l=clamp(.5+(den-fb(b2+sd*.09))*5.,0.,1.);
+  vec3 lit=mix(vec3(1.),SC,.3), sh=mix(C2,vec3(.36,.36,.5),.5);
+  vec3 cc=mix(sh,lit,l); cc=mix(cc,vec3(.16,.18,.34),NI*.82);
+  cc+=SC*smoothstep(0.,.5,cov)*(1.-smoothstep(.5,1.,cov))*exp(-d*2.2)*.35*(1.-NI);
+  col=mix(col,cc,cov*.92);
+  /* onda de luz al pulsar */
+  float rr=(length(p-vec2(B.x*asp,B.y))-B.z*.55)*16.;
+  col+=SC*exp(-rr*rr)*max(0.,1.-B.z/1.5)*.5*step(B.z,1.5);
+  col+=(h1(gl_FragCoord.xy+fract(T))-.5)*.03;
+  gl_FragColor=vec4(col,1.);
+}`;
+  const mk = (ty, src) => { const sh = gl.createShader(ty); gl.shaderSource(sh, src); gl.compileShader(sh); if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) { console.warn(gl.getShaderInfoLog(sh)); return null; } return sh; };
+  const vs = mk(gl.VERTEX_SHADER, 'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}'), fs = mk(gl.FRAGMENT_SHADER, FRAG); if (!vs || !fs) return null;
+  const pr = gl.createProgram(); gl.attachShader(pr, vs); gl.attachShader(pr, fs); gl.linkProgram(pr); if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return null; gl.useProgram(pr);
+  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const U = {}; ['R', 'T', 'C1', 'C2', 'C3', 'SC', 'ST', 'LU', 'NI', 'CL', 'SUN', 'M', 'W', 'B'].forEach(n => U[n] = gl.getUniformLocation(pr, n));
+  const u = {c1: [.8, .85, .95], c2: [.9, .84, .9], c3: [.97, .86, .8], sc: [1, .95, .84], st: 0, lu: 0, ni: 0, cl: .5, sun: [.1, .45]};
+  const v = {x: .5, y: .5, s: 0, vx: 0, vy: 0, ult: 0}, ola = {x: .5, y: .5, t: -9};
+  let esc = innerWidth < 700 ? .5 : .62, raf = 0, parada = false, calor = 0, acum = 0, nCu = 0, ultDib = 0, actividad = 0;
+  function talla(){
+    const d = Math.min(devicePixelRatio || 1, 1.5); let W = Math.max(2, Math.round(innerWidth * d * esc)), H = Math.max(2, Math.round(innerHeight * d * esc));
+    if (W > 1100) { H = Math.round(H * 1100 / W); W = 1100; } cv.width = W; cv.height = H; gl.viewport(0, 0, W, H);
+  }
+  function cuadro(ahora){
+    raf = 0; if (parada || document.hidden) return;
+    const t = ahora / 1000, edad = t - ola.t, movio = ahora - v.ult < 160;
+    v.s += ((movio ? 1 : 0) - v.s) * (movio ? .18 : .05); v.vx *= .9; v.vy *= .9;
+    const ocupado = v.s > .02 || edad < 1.5 || ahora < actividad;
+    if (!ocupado && ahora - ultDib < 33) { raf = requestAnimationFrame(cuadro); return; }        // en calma, ~30 cuadros/s bastan
+    if (calor < 8) calor++; else { const dt = ahora - ultDib; if (dt < 2000) { acum += dt; nCu++; } }
+    ultDib = ahora;
+    if (nCu >= 30 || (nCu >= 4 && acum > 1400)) { const m = acum / nCu; acum = nCu = 0; if (m > (ocupado ? 45 : 70)) { if (esc > .34) { esc *= .78; talla(); } else { parada = true; cv.dataset.estado = 'quieto'; } } }
+    gl.uniform2f(U.R, cv.width, cv.height); gl.uniform1f(U.T, quieto ? 40 : t);
+    gl.uniform3fv(U.C1, u.c1); gl.uniform3fv(U.C2, u.c2); gl.uniform3fv(U.C3, u.c3); gl.uniform3fv(U.SC, u.sc);
+    gl.uniform1f(U.ST, u.st); gl.uniform1f(U.LU, u.lu); gl.uniform1f(U.NI, u.ni); gl.uniform1f(U.CL, u.cl); gl.uniform2fv(U.SUN, u.sun);
+    gl.uniform3f(U.M, v.x, v.y, v.s); gl.uniform2f(U.W, v.vx, v.vy); gl.uniform3f(U.B, ola.x, ola.y, edad < 1.5 ? edad : 9);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    raf = requestAnimationFrame(cuadro);
+  }
+  const pedir = () => { actividad = performance.now() + 250; if (!raf && !parada) raf = requestAnimationFrame(cuadro); };
+  if (!quieto) {
+    addEventListener('pointermove', e => {
+      if (e.pointerType === 'touch') return;
+      const x = e.clientX / innerWidth, y = 1 - e.clientY / innerHeight, a = innerWidth / innerHeight;
+      v.vx = Math.max(-.12, Math.min(.12, v.vx + (x - v.x) * a * .5)); v.vy = Math.max(-.12, Math.min(.12, v.vy + (y - v.y) * .5));
+      v.x = x; v.y = y; v.ult = performance.now(); pedir();
+    }, {passive: true});
+    addEventListener('pointerdown', e => { if (e.target.closest && e.target.closest('a,button,input,label')) return; ola.x = e.clientX / innerWidth; ola.y = 1 - e.clientY / innerHeight; ola.t = performance.now() / 1000; pedir(); }, {passive: true});
+  }
+  addEventListener('resize', () => { talla(); pedir(); });
+  document.addEventListener('visibilitychange', pedir);
+  talla(); raiz.classList.add('gl'); pedir();
+  return {u, pedir};
+})();
+
+const mez = (a, b, t) => a + (b - a) * t, rgb = a => `rgb(${a.join(',')})`;
+let manual = false, solX = 0, solY = 0;                                          // el sol en píxeles, para poder agarrarlo
+function aplica(a, b, t, tq, qs){
+  const A = MOMENTOS[a], B = MOMENTOS[b], s = raiz.style, mx = (x, y, k) => x.map((vv, i) => Math.round(mez(vv, y[i], k))), c = {};
+  for (const k of ['c1', 'c2', 'c3', 'ac', 'sol']) { c[k] = mx(A[k], B[k], t); s.setProperty('--' + k, rgb(c[k])); }
+  // el texto cambia de oscuro a claro en un tramo corto, para que nunca quede gris sobre gris
+  const tt = Math.max(0, Math.min(1, (t - .42) / .16));
+  s.setProperty('--tx', rgb(mx(A.tx, B.tx, tt))); s.setProperty('--inv', rgb(mx(A.inv, B.inv, tt)));
+  for (const k of ['gla', 'glb', 'st', 'lu']) s.setProperty('--' + k, mez(A[k], B[k], t).toFixed(3));
+  const q = qs !== undefined ? qs : mez(A.q, B.q, tq === undefined ? t : tq);       // el sol recorre un arco de izquierda a derecha
+  const sy = (74 - Math.sin(Math.min(1, q) * Math.PI) * 60 + Math.max(0, q - 1) * 260) / 100;
+  s.setProperty('--sx', (q * 100).toFixed(2) + 'vw'); s.setProperty('--sy', (sy * 100).toFixed(2) + 'vh');
+  solX = q * innerWidth; solY = sy * innerHeight;
+  if (cieloGL) {
+    const u = cieloGL.u; u.c1 = c.c1.map(n => n / 255); u.c2 = c.c2.map(n => n / 255); u.c3 = c.c3.map(n => n / 255); u.sc = c.sol.map(n => n / 255);
+    u.st = mez(A.st, B.st, t); u.lu = mez(A.lu, B.lu, t); u.ni = Math.min(1, u.st / .9); u.cl = mez(A.cl, B.cl, t); u.sun = [q, 1 - sy]; cieloGL.pedir();
+  }
+}
+function pintar(){
+  pend = false; if (manual) return;
+  const y = scrollY; let i = 0;
+  while (i < paradas.length - 2 && y > paradas[i + 1][0]) i++;
+  const [y0, a] = paradas[i], [y1, b] = paradas[i + 1];
+  const t = Math.max(0, Math.min(1, (y - y0) / (y1 - y0 || 1)));
+  aplica(a, b, t * t * (3 - 2 * t));
+}
+let pend = false;
+addEventListener('scroll', () => { manual = false; if (!pend) { pend = true; requestAnimationFrame(pintar); } }, {passive: true});
+addEventListener('resize', () => { medir(); pintar(); });
+addEventListener('load', () => { medir(); pintar(); });
+medir(); pintar();
+
+
+
+/* ============ agarrar el sol: arrastrarlo cambia el momento del día en vivo ============ */
+(function agarrar(){
+  const hero = document.getElementById('inicio'), rango = document.getElementById('faseRango');
+  const Q = [.1, .5, .86, 1];                                                   // posición del sol en cada momento (la noche llega al borde derecho)
+  let arrastra = false;
+  const marca = () => raiz.classList.add('usado');
+  function ir(f){                                                               // f = 0..3 recorre amanecer, mediodía, atardecer y noche
+    f = Math.max(0, Math.min(3, f)); const a = Math.min(2, Math.floor(f)), tl = f - a;
+    manual = true; aplica(a, a + 1, tl * tl * (3 - 2 * tl), undefined, mez(Q[a], Q[a + 1], tl)); rango.value = Math.round(f * 100);
+  }
+  const deX = x => { const q = Math.max(Q[0], Math.min(Q[3], x / innerWidth)); let a = 0; while (a < 2 && q > Q[a + 1]) a++; return a + (q - Q[a]) / (Q[a + 1] - Q[a]); };
+  const cerca = e => Math.hypot(e.clientX - solX, e.clientY - solY) < (matchMedia('(pointer:coarse)').matches ? 90 : 72);
+  hero.addEventListener('pointerdown', e => {
+    if (e.target.closest('a,button,input,label') || !cerca(e)) return;
+    arrastra = true; marca(); hero.setPointerCapture(e.pointerId); hero.style.cursor = 'grabbing'; ir(deX(e.clientX));
+  });
+  hero.addEventListener('pointermove', e => {
+    if (arrastra) ir(deX(e.clientX)); else if (e.pointerType === 'mouse') hero.style.cursor = cerca(e) ? 'grab' : '';
+  });
+  const suelta = () => { arrastra = false; hero.style.cursor = ''; };
+  hero.addEventListener('pointerup', suelta); hero.addEventListener('pointercancel', suelta);
+  rango.addEventListener('input', () => { marca(); ir(rango.value / 100); });  // teclado: mover el control deslizante
+})();
+
+/* ============ apariciones suaves ============ */
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), {threshold: .15, rootMargin: '0px 0px -6% 0px'});
+document.querySelectorAll('.r').forEach(el => io.observe(el));
+
+</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+name: Capturas y mediciones
+# Prueba la página en los servidores de GitHub (no en el portátil de nadie) y guarda capturas + informe.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['index.html', 'scripts/**', '.github/workflows/capturas.yml']
+
+jobs:
+  probar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Instalar Playwright
+        run: |
+          npm init -y >/dev/null
+          npm i playwright@1.49.1 >/dev/null
+          npx playwright install --with-deps chromium
+      - name: Capturas y mediciones
+        run: node scripts/capturas.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: capturas
+          path: salida/
+          retention-days: 7

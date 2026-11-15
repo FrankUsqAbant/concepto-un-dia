@@ -317,10 +317,10 @@ void main(){
   float q1=fb(bs+vec2(0.,T*.008));
   vec2 b2=bs*1.15+q1*1.2+vec2(T*.018,0.);
   float den=fb(b2);
-  float lo=.66-CL*.16;
-  float cov=smoothstep(lo,lo+.30,den)*mix(.45,1.,smoothstep(0.,.55,uv.y));
+  float lo=.59-CL*.17;
+  float cov=smoothstep(lo,lo+.26,den)*mix(.45,1.,smoothstep(0.,.55,uv.y));
   vec2 sd=normalize(sp-p+.0001);
-  float l=clamp(.5+(den-fb(b2+sd*.09))*3.4,0.,1.);
+  float l=clamp(.5+(den-fb(b2+sd*.09))*4.2,0.,1.);
   vec3 lit=mix(vec3(1.),SC,.22), sh=mix(C2,C1,.5)*.80+vec3(.04,.03,.07);
   vec3 cc=mix(sh,lit,l); cc=mix(cc,vec3(.16,.18,.34),NI*.82);
   cc+=SC*smoothstep(0.,.5,cov)*(1.-smoothstep(.5,1.,cov))*exp(-d*2.2)*.35*(1.-NI);
@@ -377,6 +377,8 @@ void main(){
 })();
 
 const mez = (a, b, t) => a + (b - a) * t, rgb = a => `rgb(${a.join(',')})`;
+const ETQ = ['Amanecer · empieza el día de tu negocio', 'Mediodía · tu negocio a pleno rendimiento', 'Atardecer · cerrando el día sin pendientes', 'Noche · y sigue atendiendo'];
+const etqHero = document.querySelector('.hero-t>.mono'); let etqAct = -1;
 let manual = false, solX = 0, solY = 0;                                          // el sol en píxeles, para poder agarrarlo
 function aplica(a, b, t, tq, qs){
   const A = MOMENTOS[a], B = MOMENTOS[b], s = raiz.style, mx = (x, y, k) => x.map((vv, i) => Math.round(mez(vv, y[i], k))), c = {};
@@ -389,6 +391,7 @@ function aplica(a, b, t, tq, qs){
   const sy = (74 - Math.sin(Math.min(1, q) * Math.PI) * 60 + Math.max(0, q - 1) * 260) / 100;
   s.setProperty('--sx', (q * 100).toFixed(2) + 'vw'); s.setProperty('--sy', (sy * 100).toFixed(2) + 'vh');
   solX = q * innerWidth; solY = sy * innerHeight;
+  const m = t < .5 ? a : b; if (m !== etqAct && etqHero) { etqAct = m; etqHero.textContent = ETQ[m]; }
   if (cieloGL) {
     const u = cieloGL.u; u.c1 = c.c1.map(n => n / 255); u.c2 = c.c2.map(n => n / 255); u.c3 = c.c3.map(n => n / 255); u.sc = c.sol.map(n => n / 255);
     u.st = mez(A.st, B.st, t); u.lu = mez(A.lu, B.lu, t); u.ni = Math.min(1, u.st / .9); u.cl = mez(A.cl, B.cl, t); u.sun = [q, 1 - sy]; cieloGL.pedir();

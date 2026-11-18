@@ -176,6 +176,12 @@ footer nav{display:flex;gap:20px}
   .hero h1 em::after{clip-path:none;transition:none}
   *{transition-duration:.01s!important}
 }
+/* Objetivos táctiles de al menos 44 px y foco visible del control accesible del sol */
+.nav .btn{min-height:44px}
+.firma{display:inline-flex;align-items:center;min-height:44px}
+footer nav a{min-width:44px;justify-content:center}
+.enlace,.nav nav a,footer nav a{display:inline-flex;align-items:center;min-height:44px}
+.hero:has(#faseRango:focus-visible) .agarra{outline:2px solid var(--tx);outline-offset:8px;border-radius:12px;opacity:1}
 </style>
 </head>
 <body>

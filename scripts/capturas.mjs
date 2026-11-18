@@ -56,6 +56,13 @@ for (const [nombre, w, h, tactil] of [['escritorio', 1280, 800, false], ['movil'
   await page.evaluate(() => window.scrollTo(0, 0)); await espera(1200);
   info.cuadros = await page.evaluate(() => new Promise(res => { const fr = []; let ult = performance.now(); const t0 = ult; (function f(n) { fr.push(n - ult); ult = n; if (n - t0 < 3000) requestAnimationFrame(f); else { fr.shift(); res({ms: Math.round(fr.reduce((a, b) => a + b, 0) / fr.length), max: Math.round(Math.max(...fr)), n: fr.length}); } })(ult); }));
   info.estadoCielo = await page.evaluate(() => document.getElementById('cieloGL')?.dataset.estado || 'activo');
+  // foco con teclado en el control accesible del sol: debe verse un contorno
+  await page.evaluate(() => window.scrollTo(0, 0)); await espera(600);
+  await page.keyboard.press('Tab');
+  await page.focus('#faseRango'); await page.keyboard.press('ArrowRight'); await espera(900);
+  info.focoSolVisible = await page.evaluate(() => { const a = document.getElementById('agarra'); const s = getComputedStyle(a); return document.activeElement.id === 'faseRango' && s.outlineStyle !== 'none' && parseFloat(s.outlineWidth) > 0; });
+  await page.screenshot({path: `${SAL}/${nombre}-6-foco-sol.png`});
+  await page.evaluate(() => document.activeElement.blur());
   // secciones
   for (const id of ['servicios', 'proyectos', 'ocaso', 'hablemos']) {
     await page.evaluate(id => { const el = document.getElementById(id); window.scrollTo(0, el.getBoundingClientRect().top + scrollY - 40); }, id);

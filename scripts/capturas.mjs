@@ -60,7 +60,7 @@ for (const [nombre, w, h, tactil] of [['escritorio', 1280, 800, false], ['movil'
   await page.evaluate(() => window.scrollTo(0, 0)); await espera(600);
   await page.keyboard.press('Tab');
   await page.focus('#faseRango'); await page.keyboard.press('ArrowRight'); await espera(900);
-  info.focoSolVisible = await page.evaluate(() => { const a = document.getElementById('agarra'); const s = getComputedStyle(a); return document.activeElement.id === 'faseRango' && s.outlineStyle !== 'none' && parseFloat(s.outlineWidth) > 0; });
+  info.focoSolVisible = await page.evaluate(() => { const a = document.getElementById('agarra'); const s = getComputedStyle(a); return document.activeElement.id === 'faseRango' && s.boxShadow !== 'none'; });
   await page.screenshot({path: `${SAL}/${nombre}-6-foco-sol.png`});
   await page.evaluate(() => document.activeElement.blur());
   // secciones

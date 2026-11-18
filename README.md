@@ -8,19 +8,24 @@
 
 Segundo diseño del portafolio de Frank Abanto: un cielo en WebGL que cambia del amanecer a la noche.
 
-- **El cursor es viento:** las nubes se abren a su paso. Arrastra el sol, o usa el control accesible, para cambiar la hora del día. Un clic suelta una onda de luz.
-- **Ligero:** un solo `index.html` de 33 KB, sin build ni dependencias. Fuentes e imágenes van dentro del repositorio y no se guarda nada en el navegador.
-- **Se adapta:** si el equipo va lento, baja la resolución del cielo y, en último caso, lo congela. Con `?nogl` usa un degradado CSS.
+- **El cursor es viento.** Las nubes se abren a su paso. Arrastra el sol, o usa el control accesible, para cambiar la hora del día.
+- **Ligera y privada.** Un solo `index.html` de 33 KB, sin build ni dependencias. Fuentes e imágenes propias y nada guardado en el navegador.
+- **Se adapta.** Si el equipo va lento, baja la resolución del cielo. Con `?nogl` usa un degradado CSS y respeta el movimiento reducido.
+
+## Estructura
+
+```
+sitio/     lo que se publica: index.html, _headers (seguridad), img/, fonts/
+scripts/   pruebas de escritorio y móvil (capturas.mjs)
+docs/      vista previa de este README
+.github/   las mismas pruebas, automáticas en GitHub
+```
 
 ## Probar y publicar
 
 ```bash
-python -m http.server 4173   # abrir http://localhost:4173
+python -m http.server 4173 -d sitio
+npx wrangler pages deploy sitio --project-name concepto-un-dia --branch main
 ```
 
-Se publica en Cloudflare Pages, con `index.html`, `_headers`, `img/` y `fonts/` en una carpeta limpia:
-`npx wrangler pages deploy <carpeta> --project-name concepto-un-dia --branch main`
-
-Cada cambio en `index.html` dispara en GitHub Actions las pruebas de escritorio y móvil, con las mismas cabeceras de seguridad que producción, y repite con `?nogl` y con movimiento reducido. Dejan capturas e informe como artefacto.
-
-Si cambias el script de `index.html`, recalcula su huella en la política de seguridad de `_headers` (`script-src 'sha256-…'`).
+Cada cambio en `sitio/` lanza las pruebas en GitHub Actions (escritorio, móvil, `?nogl` y movimiento reducido) con las cabeceras reales. Si editas el script de `index.html`, recalcula su huella `sha256` en `sitio/_headers`.

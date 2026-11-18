@@ -5,7 +5,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const RAIZ = process.cwd(), SAL = path.join(RAIZ, process.env.SALIDA || 'salida');
+const RAIZ = path.join(process.cwd(), 'sitio'), SAL = path.join(process.cwd(), process.env.SALIDA || 'salida'); // RAIZ: la carpeta que se publica
 fs.mkdirSync(SAL, {recursive: true});
 // Servidor de pruebas: sirve la carpeta con las MISMAS cabeceras que producción (_headers, bloque /*),
 // así una política de seguridad que bloquee algo aparece aquí como error de consola.

@@ -7,14 +7,22 @@
 <link rel="icon" href="data:,">
 <meta name="description" content="Frank Abanto: software e IA hechos a la medida de tu negocio. Un día entero trabajando por ti.">
 <meta name="theme-color" content="#cdd9f2">
+<link rel="canonical" href="https://concepto-un-dia.pages.dev/">
 <meta property="og:type" content="website"><meta property="og:locale" content="es_PE">
+<meta property="og:url" content="https://concepto-un-dia.pages.dev/">
+<meta property="og:image" content="https://concepto-un-dia.pages.dev/img/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta property="og:title" content="Frank Abanto — Software e IA hechos a tu medida">
 <meta property="og:description" content="Conecto tus herramientas, automatizo tus procesos y pongo la inteligencia artificial a trabajar para ti.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=La+Belle+Aurore&text=Frank%20Abanto&display=swap" rel="stylesheet">
+<link rel="preload" href="fonts/instrument-serif-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/inter-variable.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+/* Fuentes propias (licencia OFL): Instrument Serif, Inter, JetBrains Mono y la firma en La Belle Aurore (solo las letras de «Frank Abanto»). */
+@font-face{font-family:"Instrument Serif";font-style:normal;font-weight:400;font-display:swap;src:url(fonts/instrument-serif-400.woff2) format("woff2")}
+@font-face{font-family:"Instrument Serif";font-style:italic;font-weight:400;font-display:swap;src:url(fonts/instrument-serif-400-italic.woff2) format("woff2")}
+@font-face{font-family:Inter;font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/inter-variable.woff2) format("woff2")}
+@font-face{font-family:"JetBrains Mono";font-style:normal;font-weight:100 800;font-display:swap;src:url(fonts/jetbrains-mono-variable.woff2) format("woff2")}
+@font-face{font-family:"La Belle Aurore";font-style:normal;font-weight:400;font-display:swap;src:url(fonts/la-belle-aurore-firma.ttf) format("truetype")}
 /* El cielo cambia con el scroll: amanecer → mediodía → atardecer → noche. Estos valores los mueve el script. */
 :root{
   --c1:#cdd9f2; --c2:#e8d5e6; --c3:#f8dccb; --tx:#1d1a2b; --inv:#ffffff; --ac:#c8553a; --sol:#fff3dc;
@@ -224,15 +232,15 @@ footer nav{display:flex;gap:20px}
   </div>
   <div class="obras">
     <a class="obra vidrio r" href="https://jireh-pasteleria.pages.dev" target="_blank" rel="noopener">
-      <div class="im"><img loading="lazy" src="https://abanto.pages.dev/images/projects/jireh-pasteleria.webp" alt="Captura de JIRÉH Pastelería"></div>
+      <div class="im"><img loading="lazy" decoding="async" width="960" height="600" src="img/jireh-pasteleria.webp" alt="Captura de JIRÉH Pastelería"></div>
       <div class="tx"><div><h3>JIRÉH Pastelería</h3><p class="tenue">Catálogo con «Arma tu torta» en vivo y pedidos por WhatsApp.</p></div><span class="ir">Ver demo →</span></div>
     </a>
     <a class="obra vidrio r" style="--d:.1s" href="https://hostal-aguilar.pages.dev" target="_blank" rel="noopener">
-      <div class="im"><img loading="lazy" src="https://abanto.pages.dev/images/projects/hostal-aguilar.webp" alt="Captura de Hostal Aguilar"></div>
+      <div class="im"><img loading="lazy" decoding="async" width="960" height="600" src="img/hostal-aguilar.webp" alt="Captura de Hostal Aguilar"></div>
       <div class="tx"><div><h3>Hostal Aguilar</h3><p class="tenue">Reservas por WhatsApp y panel de administración.</p></div><span class="ir">Ver demo →</span></div>
     </a>
     <a class="obra vidrio r" style="--d:.2s" href="https://chavez-originals.pages.dev" target="_blank" rel="noopener">
-      <div class="im"><img loading="lazy" src="https://abanto.pages.dev/images/projects/chavez-originals.webp" alt="Captura de Chavez Originals"></div>
+      <div class="im"><img loading="lazy" decoding="async" width="960" height="600" src="img/chavez-originals.webp" alt="Captura de Chavez Originals"></div>
       <div class="tx"><div><h3>Chavez Originals</h3><p class="tenue">Vitrina interactiva y catálogo administrable.</p></div><span class="ir">Ver demo →</span></div>
     </a>
   </div>
@@ -244,7 +252,7 @@ footer nav{display:flex;gap:20px}
 
 <!-- 4 · NOCHE -->
 <section class="cierre" id="hablemos">
-  <div class="arco r"><img src="https://abanto.pages.dev/images/frank-hero.webp" alt="Frank Abanto"></div>
+  <div class="arco r"><img src="img/frank-hero.webp" width="420" height="580" alt="Frank Abanto"></div>
   <span class="mono tenue r">Siguiente paso</span>
   <h2 class="r" style="--d:.1s;margin-top:16px">Hablemos <em>30 minutos.</em></h2>
   <p class="tenue r" style="--d:.2s">Me cuentas cómo trabajas hoy y vemos juntos qué se puede hacer solo. Sin compromiso.</p>

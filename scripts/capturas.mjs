@@ -7,11 +7,23 @@ import path from 'node:path';
 
 const RAIZ = process.cwd(), SAL = path.join(RAIZ, 'salida');
 fs.mkdirSync(SAL, {recursive: true});
+// Servidor de pruebas: sirve la carpeta con las MISMAS cabeceras que producción (_headers, bloque /*),
+// así una política de seguridad que bloquee algo aparece aquí como error de consola.
+const TIPOS = {'.html': 'text/html; charset=utf-8', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.woff2': 'font/woff2', '.ttf': 'font/ttf', '.js': 'text/javascript', '.css': 'text/css'};
+const CABECERAS = {};
+try {
+  let activo = false;
+  for (const l of fs.readFileSync(path.join(RAIZ, '_headers'), 'utf8').split('\n')) {
+    if (!l.startsWith(' ') && l.trim()) activo = l.trim() === '/*';
+    else if (activo && l.includes(':')) { const i = l.indexOf(':'); CABECERAS[l.slice(0, i).trim()] = l.slice(i + 1).trim(); }
+  }
+} catch { /* sin _headers */ }
 const server = http.createServer((q, r) => {
-  const u = q.url.split('?')[0], f = path.join(RAIZ, u === '/' ? 'index.html' : u);
+  const u = decodeURIComponent(q.url.split('?')[0]), f = path.join(RAIZ, u === '/' ? 'index.html' : u);
+  if (!f.startsWith(RAIZ)) { r.writeHead(403); r.end(); return; }
   fs.readFile(f, (e, d) => {
     if (e) { r.writeHead(404); r.end(); return; }
-    r.writeHead(200, {'content-type': f.endsWith('.html') ? 'text/html; charset=utf-8' : f.endsWith('.webp') ? 'image/webp' : 'application/octet-stream'}); r.end(d);
+    r.writeHead(200, {...CABECERAS, 'content-type': TIPOS[path.extname(f)] || 'application/octet-stream'}); r.end(d);
   });
 }).listen(4173);
 
@@ -24,6 +36,9 @@ for (const [nombre, w, h, tactil] of [['escritorio', 1280, 800, false], ['movil'
   const page = await ctx.newPage(), errores = [];
   page.on('console', m => { if (m.type() === 'error') errores.push(m.text().slice(0, 200)); });
   page.on('pageerror', e => errores.push(String(e).slice(0, 200)));
+  const fallos = [];
+  page.on('response', r => { if (r.status() >= 400) fallos.push(r.status() + ' ' + r.url().slice(0, 120)); });
+  page.on('requestfailed', r => fallos.push('fallo ' + r.url().slice(0, 120)));
   await page.goto('http://localhost:4173/' + (process.env.CONSULTA || ''), {waitUntil: 'load'});
   await page.addStyleTag({content: 'html{scroll-behavior:auto!important}'});
   await espera(6000);
@@ -49,6 +64,8 @@ for (const [nombre, w, h, tactil] of [['escritorio', 1280, 800, false], ['movil'
   }
   info.desbordeHorizontal = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
   info.alto = await page.evaluate(() => document.documentElement.scrollHeight);
+  info.fuentes = await page.evaluate(async () => { await document.fonts.ready; return [...new Set([...document.fonts].filter(f => f.status === 'loaded').map(f => f.family))]; });
+  info.recursosFallidos = fallos;
   info.errores = errores;
   informe[nombre] = info;
   await ctx.close();

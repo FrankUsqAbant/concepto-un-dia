@@ -5,7 +5,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const RAIZ = process.cwd(), SAL = path.join(RAIZ, 'salida');
+const RAIZ = process.cwd(), SAL = path.join(RAIZ, process.env.SALIDA || 'salida');
 fs.mkdirSync(SAL, {recursive: true});
 // Servidor de pruebas: sirve la carpeta con las MISMAS cabeceras que producción (_headers, bloque /*),
 // así una política de seguridad que bloquee algo aparece aquí como error de consola.
@@ -32,7 +32,7 @@ const informe = {};
 const espera = ms => new Promise(r => setTimeout(r, ms));
 
 for (const [nombre, w, h, tactil] of [['escritorio', 1280, 800, false], ['movil', 375, 812, true]]) {
-  const ctx = await browser.newContext({viewport: {width: w, height: h}, deviceScaleFactor: 1, hasTouch: tactil, isMobile: tactil});
+  const ctx = await browser.newContext({viewport: {width: w, height: h}, deviceScaleFactor: 1, hasTouch: tactil, isMobile: tactil, reducedMotion: process.env.MOVIMIENTO === 'reduce' ? 'reduce' : 'no-preference'});
   const page = await ctx.newPage(), errores = [];
   page.on('console', m => { if (m.type() === 'error') errores.push(m.text().slice(0, 200)); });
   page.on('pageerror', e => errores.push(String(e).slice(0, 200)));
@@ -65,6 +65,11 @@ for (const [nombre, w, h, tactil] of [['escritorio', 1280, 800, false], ['movil'
   info.desbordeHorizontal = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
   info.alto = await page.evaluate(() => document.documentElement.scrollHeight);
   info.fuentes = await page.evaluate(async () => { await document.fonts.ready; return [...new Set([...document.fonts].filter(f => f.status === 'loaded').map(f => f.family))]; });
+  // Imágenes: tras recorrer la página (las perezosas ya cargaron) ninguna debe estar rota
+  info.imagenesRotas = await page.evaluate(() => [...document.images].filter(i => !(i.complete && i.naturalWidth > 0)).map(i => i.getAttribute('src')));
+  // Objetivos táctiles: enlaces y botones visibles de menos de 44 px en alguna dimensión (los enlaces dentro de un párrafo se ignoran)
+  info.objetivosPequenos = await page.evaluate(() => [...document.querySelectorAll('a,button,input')].filter(e => { const r = e.getBoundingClientRect(); const v = r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== 'hidden'; return v && (r.height < 44 || r.width < 44) && !e.closest('p'); }).map(e => (e.textContent || e.getAttribute('aria-label') || e.id || e.tagName).trim().slice(0, 30) + ' ' + Math.round(e.getBoundingClientRect().width) + 'x' + Math.round(e.getBoundingClientRect().height)));
+  info.estructura = await page.evaluate(() => ({h1: document.querySelectorAll('h1').length, lang: document.documentElement.lang, sinAlt: [...document.images].filter(i => !i.hasAttribute('alt')).length}));
   info.recursosFallidos = fallos;
   info.errores = errores;
   informe[nombre] = info;

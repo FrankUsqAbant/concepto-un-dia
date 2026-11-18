@@ -22,6 +22,10 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Capturas y mediciones
         run: node scripts/capturas.mjs
+      - name: Respaldo sin WebGL (?nogl)
+        run: SALIDA=salida/nogl CONSULTA='?nogl' node scripts/capturas.mjs
+      - name: Movimiento reducido
+        run: SALIDA=salida/reducida MOVIMIENTO=reduce node scripts/capturas.mjs
       - uses: actions/upload-artifact@v4
         with:
           name: capturas
